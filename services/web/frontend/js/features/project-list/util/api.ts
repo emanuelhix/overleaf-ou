@@ -57,6 +57,15 @@ export function deleteProject(projectId: string) {
   return deleteJSON(`/project/${projectId}`)
 }
 
+// FIXME: in the backend, this is going to just archive the project for now
+// export function lockProject(projectId: string) {
+//   return postJSON(`/project/${projectId}/lock`)
+// }
+
+export function lockProject(projectId: string) {
+  return postJSON(`/project/${projectId}/archive`)
+}
+
 export function leaveProject(projectId: string) {
   return postJSON(`/project/${projectId}/leave`)
 }

@@ -20,6 +20,7 @@ module.exports = {
   unArchiveAllDocs: callbackify(unArchiveAllDocs),
   unarchiveDoc: callbackify(unarchiveDoc),
   destroyProject: callbackify(destroyProject),
+  lockProject: callbackify(archiveDoc), // for now, if a project is locked, it will just be archived. this is simply for testing purposes.
   getDoc: callbackify(getDoc),
   promises: {
     archiveAllDocs,

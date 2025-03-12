@@ -82,6 +82,9 @@ app.post('/project/:project_id/doc/:doc_id/archive', HttpController.archiveDoc)
 app.post('/project/:project_id/unarchive', HttpController.unArchiveAllDocs)
 app.post('/project/:project_id/destroy', HttpController.destroyProject)
 
+// expose the lock utility to the front end as an API function
+app.post('/project/:project_id/lock', HttpController.lockProject)
+
 app.get('/health_check', HttpController.healthCheck)
 
 app.get('/status', (req, res) => res.send('docstore is alive'))
