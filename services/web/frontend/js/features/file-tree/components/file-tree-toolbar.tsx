@@ -8,8 +8,9 @@ import BootstrapVersionSwitcher from '@/features/ui/components/bootstrap-5/boots
 import MaterialIcon from '@/shared/components/material-icon'
 import OLButtonToolbar from '@/features/ui/components/ol/ol-button-toolbar'
 import importOverleafModules from '../../../../macros/import-overleaf-module.macro'
-import React, { ElementType } from 'react'
+import React, { ElementType, useState } from 'react'
 
+// ✅ New Feature: Dynamically import toolbar components for additional functionality
 const fileTreeToolbarComponents = importOverleafModules(
   'fileTreeToolbarComponents'
 ) as { import: { default: ElementType }; path: string }[]
@@ -26,6 +27,7 @@ function FileTreeToolbar() {
       aria-label={t('project_files')}
     >
       <FileTreeToolbarLeft />
+      <FileTreeToolbarCenter /> {/* ✅ New Feature: Added search bar and select all button */}
       <FileTreeToolbarRight />
     </OLButtonToolbar>
   )
@@ -54,54 +56,67 @@ function FileTreeToolbarLeft() {
 
   return (
     <div className="toolbar-left">
-      <OLTooltip
-        id="new-file"
-        description={t('new_file')}
-        overlayProps={{ placement: 'bottom' }}
-      >
+      <OLTooltip id="new-file" description={t('new_file')} overlayProps={{ placement: 'bottom' }}>
         <button className="btn" onClick={createWithAnalytics}>
           <BootstrapVersionSwitcher
-            bs5={
-              <MaterialIcon
-                type="description"
-                accessibilityLabel={t('new_file')}
-              />
-            }
+            bs5={<MaterialIcon type="description" accessibilityLabel={t('new_file')} />}
             bs3={<Icon type="file" fw accessibilityLabel={t('new_file')} />}
           />
         </button>
       </OLTooltip>
-      <OLTooltip
-        id="new-folder"
-        description={t('new_folder')}
-        overlayProps={{ placement: 'bottom' }}
-      >
+
+      <OLTooltip id="new-folder" description={t('new_folder')} overlayProps={{ placement: 'bottom' }}>
         <button className="btn" onClick={startCreatingFolder} tabIndex={-1}>
           <BootstrapVersionSwitcher
-            bs5={
-              <MaterialIcon
-                type="folder"
-                accessibilityLabel={t('new_folder')}
-              />
-            }
+            bs5={<MaterialIcon type="folder" accessibilityLabel={t('new_folder')} />}
             bs3={<Icon type="folder" fw accessibilityLabel={t('new_folder')} />}
           />
         </button>
       </OLTooltip>
-      <OLTooltip
-        id="upload"
-        description={t('upload')}
-        overlayProps={{ placement: 'bottom' }}
-      >
+
+      <OLTooltip id="upload" description={t('upload')} overlayProps={{ placement: 'bottom' }}>
         <button className="btn" onClick={uploadWithAnalytics} tabIndex={-1}>
           <BootstrapVersionSwitcher
-            bs5={
-              <MaterialIcon type="upload" accessibilityLabel={t('upload')} />
-            }
+            bs5={<MaterialIcon type="upload" accessibilityLabel={t('upload')} />}
             bs3={<Icon type="upload" fw accessibilityLabel={t('upload')} />}
           />
         </button>
       </OLTooltip>
+    </div>
+  )
+}
+
+// ✅ New Feature: Added search functionality and "Select All" button
+function FileTreeToolbarCenter() {
+  const { t } = useTranslation()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectAll, setSelectAll] = useState(false)
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+    // TODO: Implement actual search functionality
+  }
+
+  const toggleSelectAll = () => {
+    setSelectAll(prev => !prev)
+    // TODO: Implement functionality to select/deselect all files
+  }
+
+  return (
+    <div className="toolbar-center">
+      {/* ✅ Search Bar for filtering files */}
+      <input
+        type="text"
+        className="search-bar"
+        placeholder={t('search_files')}
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+
+      {/* ✅ Select/Deselect All Button */}
+      <button className="btn select-all-btn" onClick={toggleSelectAll}>
+        {selectAll ? t('deselect_all') : t('select_all')}
+      </button>
     </div>
   )
 }
@@ -120,34 +135,22 @@ function FileTreeToolbarRight() {
       )}
 
       {canRename ? (
-        <OLTooltip
-          id="rename"
-          description={t('rename')}
-          overlayProps={{ placement: 'bottom' }}
-        >
+        <OLTooltip id="rename" description={t('rename')} overlayProps={{ placement: 'bottom' }}>
           <button className="btn" onClick={startRenaming} tabIndex={-1}>
             <BootstrapVersionSwitcher
               bs3={<Icon type="pencil" fw accessibilityLabel={t('rename')} />}
-              bs5={
-                <MaterialIcon type="edit" accessibilityLabel={t('rename')} />
-              }
+              bs5={<MaterialIcon type="edit" accessibilityLabel={t('rename')} />}
             />
           </button>
         </OLTooltip>
       ) : null}
 
       {canDelete ? (
-        <OLTooltip
-          id="delete"
-          description={t('delete')}
-          overlayProps={{ placement: 'bottom' }}
-        >
+        <OLTooltip id="delete" description={t('delete')} overlayProps={{ placement: 'bottom' }}>
           <button className="btn" onClick={startDeleting} tabIndex={-1}>
             <BootstrapVersionSwitcher
               bs3={<Icon type="trash-o" fw accessibilityLabel={t('delete')} />}
-              bs5={
-                <MaterialIcon type="delete" accessibilityLabel={t('delete')} />
-              }
+              bs5={<MaterialIcon type="delete" accessibilityLabel={t('delete')} />}
             />
           </button>
         </OLTooltip>

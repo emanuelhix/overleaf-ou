@@ -1,4 +1,5 @@
-/* eslint-disable jsx-a11y/no-autofocus */
+
+/* eslint-disable jsx-a11y/no-autofocus 
 import PropTypes from 'prop-types'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -157,3 +158,153 @@ CloneProjectModalContent.propTypes = {
     })
   ),
 }
+
+
+*/
+
+
+
+import PropTypes from 'prop-types';
+import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { postJSON } from '../../../infrastructure/fetch-json';
+import { CloneProjectTag } from './clone-project-tag';
+import {
+  OLModalBody,
+  OLModalFooter,
+  OLModalHeader,
+  OLModalTitle,
+} from '@/features/ui/components/ol/ol-modal';
+import Notification from '@/shared/components/notification';
+import OLForm from '@/features/ui/components/ol/ol-form';
+import OLFormGroup from '@/features/ui/components/ol/ol-form-group';
+import OLFormControl from '@/features/ui/components/ol/ol-form-control';
+import OLFormLabel from '@/features/ui/components/ol/ol-form-label';
+import OLButton from '@/features/ui/components/ol/ol-button';
+
+export default function CloneProjectModalContent({
+  handleHide,
+  inFlight,
+  setInFlight,
+  handleAfterCloned,
+  projectId,
+  projectName,
+  projectTags,
+}) {
+  const { t } = useTranslation();
+
+  const [error, setError] = useState(null);
+  const [clonedProjectName, setClonedProjectName] = useState(`${projectName} (Copy)`);
+  const [clonedProjectTags, setClonedProjectTags] = useState(projectTags);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  // Hardcoded file list
+  const fileList = [
+    'file1.tex',
+    'file2.txt',
+    'file3.html',
+    'file4.xls',
+    'file5.zip',
+    'file6.tsx',
+    'file7.css',
+    'file8.pdf'
+  ];
+
+  // Validate that the cloned project has a name
+  const valid = useMemo(() => clonedProjectName.trim().length > 0, [clonedProjectName]);
+
+  // Handle checkbox selection for files
+  const toggleFileSelection = (file) => {
+    setSelectedFiles(prev => 
+      prev.includes(file) ? prev.filter(f => f !== file) : [...prev, file]
+    );
+  };
+
+  // Form submission: Clone the project if valid
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!valid) return;
+
+    setInFlight(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    try {
+      const response = await postJSON(`/project/${projectId}/clone`, {
+        name: clonedProjectName,
+        tags: clonedProjectTags,
+        files: selectedFiles,
+      });
+
+      if (response.success) {
+        setSuccessMessage(`Project copied successfully! Click here to open: ${response.newProjectUrl}`);
+        handleAfterCloned(response.newProjectId);
+      } else {
+        throw new Error(response.error || 'An unknown error occurred.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setInFlight(false);
+    }
+  };
+
+  return (
+    <OLModalBody>
+      <OLModalHeader>
+        <OLModalTitle>{t('Clone Project')}</OLModalTitle>
+      </OLModalHeader>
+      
+      {error && <Notification type="error">{error}</Notification>}
+      {successMessage && <Notification type="success">{successMessage}</Notification>}
+
+      <OLForm onSubmit={handleSubmit}>
+        <OLFormGroup>
+          <OLFormLabel>New Project Name</OLFormLabel>
+          <OLFormControl
+            type="text"
+            value={clonedProjectName}
+            onChange={(e) => setClonedProjectName(e.target.value)}
+            disabled={inFlight}
+          />
+        </OLFormGroup>
+
+        <OLFormGroup>
+          <OLFormLabel>Select Files to Copy</OLFormLabel>
+          <div>
+            {fileList.map(file => (
+              <div key={file}>
+                <input
+                  type="checkbox"
+                  checked={selectedFiles.includes(file)}
+                  onChange={() => toggleFileSelection(file)}
+                />
+                {file}
+              </div>
+            ))}
+          </div>
+        </OLFormGroup>
+
+        <OLModalFooter>
+          <OLButton type="button" onClick={handleHide} disabled={inFlight}>
+            Cancel
+          </OLButton>
+          <OLButton type="submit" disabled={!valid || inFlight}>
+            {inFlight ? "Copying..." : "Copy Project"}
+          </OLButton>
+        </OLModalFooter>
+      </OLForm>
+    </OLModalBody>
+  );
+}
+
+CloneProjectModalContent.propTypes = {
+  handleHide: PropTypes.func.isRequired,
+  inFlight: PropTypes.bool.isRequired,
+  setInFlight: PropTypes.func.isRequired,
+  handleAfterCloned: PropTypes.func.isRequired,
+  projectId: PropTypes.string.isRequired,
+  projectName: PropTypes.string.isRequired,
+  projectTags: PropTypes.array.isRequired,
+};
