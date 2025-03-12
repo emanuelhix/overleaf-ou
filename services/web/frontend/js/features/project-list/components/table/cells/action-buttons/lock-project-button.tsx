@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Project } from '../../../../../../../../types/project/dashboard/api'
-import DeleteProjectModal from '../../../modals/delete-project-modal'
+import LockProjectModal from '../../../modals/lock-project-modal'
 import useIsMounted from '../../../../../../shared/hooks/use-is-mounted'
 import { deleteProject } from '../../../../util/api'
 import { useProjectListContext } from '../../../../context/project-list-context'
@@ -35,21 +35,29 @@ function LockProjectButton({ project, children }: LockProjectButtonProps) {
         return project.owner && getMeta('ol-user_id') === project.owner.id
     }, [project])
 
-    const handleDeleteProject = useCallback(async () => {
-        await deleteProject(project.id)
+    // FIXME: handleLockedProject -- update the UI here, it should be disabled in this view and enabled in the "locked projects" tab
+    // const handleDeleteProject = useCallback(async () => {
+    //     await deleteProject(project.id)
 
-        // update view
-        removeProjectFromView(project)
+    //     // update view
+    //     removeProjectFromView(project)
+    // }, [project, removeProjectFromView])
+
+    // Only the owner can lock the project.
+
+    // use callback will update this function if project or removeProjectFromView change
+    const handleLockProject = useCallback(async () => {
+
     }, [project, removeProjectFromView])
 
-    //if (!project.trashed || !isOwner) return null
+    if (!isOwner) return null
 
     return (
         <>
             {children(text, handleOpenModal)}
-            <DeleteProjectModal
+            <LockProjectModal
                 projects={[project]}
-                actionHandler={handleDeleteProject}
+                actionHandler={handleLockProject}
                 showModal={showModal}
                 handleCloseModal={handleCloseModal}
             />
