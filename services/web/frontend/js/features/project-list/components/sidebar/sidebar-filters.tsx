@@ -38,6 +38,7 @@ export default function SidebarFilters() {
       <SidebarFilter filter="shared" text={t('shared_with_you')} />
       <SidebarFilter filter="archived" text={t('archived_projects')} />
       <SidebarFilter filter="trashed" text={t('trashed_projects')} />
+      <SidebarFilter filter="locked" text={t('locked_projects')} />
       {hasDsNav() && (
         <li role="none">
           <hr />

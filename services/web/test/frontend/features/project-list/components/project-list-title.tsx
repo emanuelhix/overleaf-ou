@@ -20,6 +20,12 @@ describe('<ProjectListTitle />', function () {
       selectedTagId: undefined,
     },
     {
+      filter: 'locked',
+      selectedTag: undefined,
+      expectedText: 'locked projects',
+      selectedTagId: undefined,
+    },
+    {
       filter: 'owned',
       selectedTag: undefined,
       expectedText: 'your projects',
