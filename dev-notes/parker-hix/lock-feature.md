@@ -71,3 +71,15 @@ If you’re familiar with Express.js, this follows the REST api pattern.
 
 Overall, this was a useful deep dive into how different parts of the system connect. Understanding this flow makes it easier to add new features like project locking in a way that fits cleanly into the existing architecture.
 
+---
+
+## Translations
+
+I’ve centralized most of the new application’s text in `en.json` to support English translations. While it’s unlikely to be needed immediately, this setup allows OU to potentially add Spanish or other language translations in the future if desired, since they aren't hardcoded.
+
+This text is returned from function calls like `const text = t('lock')` in `overleaf-ou/services/web/frontend/js/features/project-list/components/table/cells/action-buttons/lock-project-button.tsx`. A key from `en.json` is passed into `t`, then the value stored in `en.json` at that key is returned.
+
+
+### Important Note
+
+Translation updates do not work with hot reloading. To verify changes, stop the containers (`bin/down`) and restart them (`bin/up`). Once restarted, the page will load the updated text from `en.json` or any other configured and detected localization file.
