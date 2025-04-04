@@ -14,6 +14,7 @@ import UnarchiveProjectButton from '../table/cells/action-buttons/unarchive-proj
 import UntrashProjectButton from '../table/cells/action-buttons/untrash-project-button'
 import LeaveProjectButton from '../table/cells/action-buttons/leave-project-button'
 import DeleteProjectButton from '../table/cells/action-buttons/delete-project-button'
+import LockProjectButton from '../table/cells/action-buttons/lock-project-button'
 import { Project } from '../../../../../../types/project/dashboard/api'
 import CompileAndDownloadProjectPDFButton from '../table/cells/action-buttons/compile-and-download-project-pdf-button'
 import RenameProjectButton from '../table/cells/action-buttons/rename-project-button'
@@ -181,6 +182,24 @@ function ActionsDropdown({ project }: ActionDropdownProps) {
             </li>
           )}
         </DeleteProjectButton>
+        <TrashProjectButton project={project}>
+          {text => (
+            <li role="none">
+              <DropdownItem as="button" tabIndex={-1} leadingIcon="block">
+                {text}
+              </DropdownItem>
+            </li>
+          )}
+        </TrashProjectButton>
+        <LockProjectButton project={project}>
+          {text => (
+            <li role="none">
+              <DropdownItem as="button" tabIndex={-1} leadingIcon="block">
+                {text}
+              </DropdownItem>
+            </li>
+          )}
+        </LockProjectButton>
       </DropdownMenu>
     </Dropdown>
   )

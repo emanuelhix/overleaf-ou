@@ -289,6 +289,21 @@ function destroyProject(req, res, next) {
   })
 }
 
+// FIXME:
+// for now, locking a project will be treated as an archive.
+function lockProject(req, res, next) {
+  const { doc_id: docId, project_id: projectId } = req.params
+  logger.debug({ projectId, docId }, 'archiving a doc')
+  DocArchive.archiveDoc(projectId, docId, function (error) {
+    if (error) {
+      return next(error)
+    }
+    res.sendStatus(204)
+  })
+}
+
+
+
 function healthCheck(req, res) {
   HealthChecker.check(function (err) {
     if (err) {
@@ -316,4 +331,5 @@ module.exports = {
   unArchiveAllDocs,
   destroyProject,
   healthCheck,
+  lockProject,
 }

@@ -39,7 +39,7 @@ import { debugConsole } from '@/utils/debugging'
 
 const MAX_PROJECT_PER_PAGE = 20
 
-export type Filter = 'all' | 'owned' | 'shared' | 'archived' | 'trashed'
+export type Filter = 'all' | 'owned' | 'shared' | 'archived' | 'trashed' | 'locked'
 type FilterMap = {
   [key in Filter]: Partial<Project> | ((project: Project) => boolean) // eslint-disable-line no-unused-vars
 }

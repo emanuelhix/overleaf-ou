@@ -55,6 +55,7 @@ function ProjectsDropdown() {
     shared: t('shared_with_you'),
     archived: t('archived_projects'),
     trashed: t('trashed_projects'),
+    locked: t('locked_projects'),
   })
 
   useEffect(() => {
@@ -100,6 +101,9 @@ function ProjectsDropdown() {
         </li>
         <li role="none">
           <Item filter="trashed" text={t('trashed_projects')} />
+        </li>
+        <li role="none">
+          <Item filter="locked" text={t('locked_projects')} />
         </li>
         <DropdownHeader className="text-uppercase">{t('tags')}:</DropdownHeader>
         <TagsList />

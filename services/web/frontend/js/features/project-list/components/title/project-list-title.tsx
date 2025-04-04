@@ -1,3 +1,5 @@
+// This is the title just above the search bar 
+
 import { useTranslation } from 'react-i18next'
 import classnames from 'classnames'
 import { Tag } from '../../../../../../app/src/Features/Tags/types'
@@ -37,6 +39,9 @@ function ProjectListTitle({
         break
       case 'trashed':
         message = t('trashed_projects')
+        break
+      case 'locked':
+        message = t('locked_projects')
         break
     }
   }
