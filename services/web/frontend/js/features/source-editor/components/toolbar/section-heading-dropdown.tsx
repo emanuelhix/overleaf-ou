@@ -23,6 +23,8 @@ const levels = new Map([
   ['subsubsection', 'Subsubsection'],
   ['paragraph', 'Paragraph'],
   ['subparagraph', 'Subparagraph'],
+  ['chapter', 'Chapter'],
+  ['part', 'Part'],
 ])
 
 const levelsEntries = [...levels.entries()]
