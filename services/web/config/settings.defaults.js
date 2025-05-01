@@ -382,7 +382,7 @@ module.exports = {
   }, // number of rounds used to hash user passwords (raised to power 2)
 
   adminUrl: process.env.ADMIN_URL,
-  adminOnlyLogin: process.env.ADMIN_ONLY_LOGIN === 'true',
+  adminOnlyLogin: process.env.ADMIN_ONLY_LOGIN === 'false',
   adminPrivilegeAvailable: process.env.ADMIN_PRIVILEGE_AVAILABLE === 'true',
   blockCrossOriginRequests: process.env.BLOCK_CROSS_ORIGIN_REQUESTS === 'true',
   allowedOrigins: (process.env.ALLOWED_ORIGINS || siteUrl).split(','),
@@ -829,7 +829,8 @@ module.exports = {
   validRootDocExtensions: ['tex', 'Rtex', 'ltx', 'Rnw'],
 
   emailConfirmationDisabled:
-    process.env.EMAIL_CONFIRMATION_DISABLED === 'true' || false,
+    //process.env.EMAIL_CONFIRMATION_DISABLED === 'true' || false,
+    true,
 
   emailAddressLimit: intFromEnv('EMAIL_ADDRESS_LIMIT', 10),
 

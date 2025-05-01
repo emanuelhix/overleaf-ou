@@ -129,6 +129,7 @@ const UserGetter = {
       projection = {}
     }
     try {
+      // For individual user lookup, we still normalize the query.
       query = normalizeQuery(query)
       db.users.findOne(query, { projection }, callback)
     } catch (err) {
@@ -169,15 +170,14 @@ const UserGetter = {
       callback = projection
       projection = {}
     }
-    // $exists: true MUST be set to use the partial index
+
     const query = { emails: { $exists: true }, 'emails.email': email }
     db.users.findOne(query, { projection }, (error, user) => {
       if (error || user) {
         return callback(error, user)
       }
 
-      // While multiple emails are being rolled out, check for the main email as
-      // well
+      // While multiple emails are being rolled out, check for the main email as well
       this.getUserByMainEmail(email, projection, callback)
     })
   },
@@ -188,18 +188,18 @@ const UserGetter = {
       projection = {}
     }
 
-    const query = {
-      'emails.email': { $in: emails }, // use the index on emails.email
-      emails: {
-        $exists: true,
-        $elemMatch: {
-          email: { $in: emails },
-          confirmedAt: { $exists: true },
-        },
-      },
-    }
+    // Get rid of query 
+    db.users.find({}, { projection }).toArray(callback)
+  },
 
-    db.users.find(query, { projection }).toArray(callback)
+
+  getUsers(query, projection, callback) {
+    try {
+
+      db.users.find({}, { projection }).toArray(callback)
+    } catch (err) {
+      callback(err)
+    }
   },
 
   getUsersByV1Ids(v1Ids, projection, callback) {
@@ -341,3 +341,4 @@ UserGetter.promises.getUserFullEmails = getUserFullEmails
 UserGetter.promises.getSsoUsersAtInstitution = getSsoUsersAtInstitution
 
 module.exports = UserGetter
+
